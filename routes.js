@@ -61,8 +61,6 @@ const routes = app => {
     }
   });
 
-  
-
   app.get("/config/categories/:key", (req, res) => {
     try {
       if (!(req && req.params && req.params.key))
