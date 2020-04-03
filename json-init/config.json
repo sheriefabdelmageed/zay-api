@@ -289,7 +289,7 @@
         ]
       },
       {
-        "ImageURL": "http://localhost:5000/files/1796531.jpg",
+        "ImageURL": "https://live.staticflickr.com/542/32288461045_61d8dfffb4_c.jpg",
         "Collection": "Pinks and Florals",
         "Text": [
           {
@@ -303,60 +303,6 @@
             "Headline": "ا ب ت",
             "Tagline": "ا ب ت ث ج",
             "Color": "#008000"
-          }
-        ]
-      },
-      {
-        "ImageURL": "http://localhost:5000/files/1796539.jpg",
-        "Collection": "Reception",
-        "Text": [
-          {
-            "Locale": "en",
-            "Headline": "dsfsdf",
-            "Tagline": "sdfsdf",
-            "TextColor": "000000"
-          },
-          {
-            "Locale": "ar",
-            "Headline": "sdfsd",
-            "Tagline": "sdfsdf",
-            "Color": "FFFFFF"
-          }
-        ]
-      },
-      {
-        "ImageURL": "http://localhost:5000/files/1796569.jpg",
-        "Collection": "PARTY",
-        "Text": [
-          {
-            "Locale": "en",
-            "Headline": "Brilliant styles to dfgdfgdfgin the new yearg",
-            "Tagline": "Brilliant styles to dfgdfgdfgin the new yearg",
-            "TextColor": "#80ffff"
-          },
-          {
-            "Locale": "ar",
-            "Headline": "اختيار رائعdfdfgfdgdfgdf",
-            "Tagline": "اختيار رائعdfdfgfdgdfgdf",
-            "Color": "#ffff00"
-          }
-        ]
-      },
-      {
-        "ImageURL": "http://localhost:5000/files/1796539.jpg",
-        "Collection": "Catwalk Legends",
-        "Text": [
-          {
-            "Locale": "en",
-            "Headline": "test 1",
-            "Tagline": "test 1 test 1",
-            "TextColor": "#ff0080"
-          },
-          {
-            "Locale": "ar",
-            "Headline": "اختبار 1",
-            "Tagline": "اختبار 1 اختبار 1",
-            "Color": "#ff0080"
           }
         ]
       }
