@@ -43,13 +43,7 @@ const routes = app => {
 
   app.get("/config", (req, res) => {
     try {
-      let data;
-      if (fs.existsSync(`${__dirname}/json/config.json`)) {
-        data = fs.readFileSync(`${__dirname}/json/config.json`);
-      } else {
-        data = fs.readFileSync(`${__dirname}/json-init/config.json`);
-      }
-
+      let data = _getData();
       const config = JSON.parse(data);
       return res.status(200).json(config);
     } catch (error) {
@@ -59,12 +53,7 @@ const routes = app => {
 
   app.get("/config/categories", (req, res) => {
     try {
-      let data;
-      if (fs.existsSync(`${__dirname}/json/config.json`)) {
-        data = fs.readFileSync(`${__dirname}/json/config.json`);
-      } else {
-        data = fs.readFileSync(`${__dirname}/json-init/config.json`);
-      }
+      let data = _getData();
       const config = JSON.parse(data);
       const categories = [];
       for (const prop in config) {
@@ -81,12 +70,7 @@ const routes = app => {
       if (!(req && req.params && req.params.key))
         return res.status(500).json({ error: "Bad Request" });
       const key = req.params.key;
-      let data;
-      if (fs.existsSync(`${__dirname}/json/config.json`)) {
-        data = fs.readFileSync(`${__dirname}/json/config.json`);
-      } else {
-        data = fs.readFileSync(`${__dirname}/json-init/config.json`);
-      }
+      let data = _getData();
       const config = JSON.parse(data);
       const filtered = config[key];
       return res.status(200).json(filtered);
@@ -99,37 +83,50 @@ const routes = app => {
     try {
       const key = req.body.key;
       const value = req.body.value;
-      let data;
-      if (fs.existsSync(`${__dirname}/json/config.json`)) {
-        data = fs.readFileSync(`${__dirname}/json/config.json`);
-      } else {
-        data = fs.readFileSync(`${__dirname}/json-init/config.json`);
-      }
+
+      //get data
+      let data = _getData();
 
       //backup old data
-      const date = new Date().valueOf().toString();
-      const backupData = data;
-      if (!fs.existsSync(`${__dirname}/json-backup/`))
-        fs.mkdirSync(`${__dirname}/json-backup/`);
-      if (!fs.existsSync(`${__dirname}/json-backup/${date}`))
-        fs.mkdirSync(`${__dirname}/json-backup/${date}`);
-      fs.writeFileSync(
-        `${__dirname}/json-backup/${date}/config.json`,
-        backupData
-      );
+      _backupData(data);
 
       //write new change to config.json
-      const config = JSON.parse(data);
-      config[key] = value;
-      const updatedData = JSON.stringify(config);
-      if (!fs.existsSync(`${__dirname}/json`))
-        fs.mkdirSync(`${__dirname}/json`);
-      fs.writeFileSync(`${__dirname}/json/config.json`, updatedData);
+      _writeData(data, key, value);
+
       return res.status(200).json(value);
     } catch (error) {
       return res.status(500).json(error);
     }
   });
 };
+
+function _getData() {
+  let data;
+  if (fs.existsSync(`${__dirname}/json/config.json`)) {
+    data = fs.readFileSync(`${__dirname}/json/config.json`);
+  } else {
+    data = fs.readFileSync(`${__dirname}/json-init/config.json`);
+  }
+
+  return data;
+}
+
+function _backupData(data) {
+  const date = new Date().valueOf().toString();
+  const backupData = data;
+  if (!fs.existsSync(`${__dirname}/json-backup/`))
+    fs.mkdirSync(`${__dirname}/json-backup/`);
+  if (!fs.existsSync(`${__dirname}/json-backup/${date}`))
+    fs.mkdirSync(`${__dirname}/json-backup/${date}`);
+  fs.writeFileSync(`${__dirname}/json-backup/${date}/config.json`, backupData);
+}
+
+function _writeData(data, key, value) {
+  const config = JSON.parse(data);
+  config[key] = value;
+  const updatedData = JSON.stringify(config);
+  if (!fs.existsSync(`${__dirname}/json`)) fs.mkdirSync(`${__dirname}/json`);
+  fs.writeFileSync(`${__dirname}/json/config.json`, updatedData);
+}
 
 module.exports = routes;
