@@ -31,7 +31,11 @@ const routes = app => {
 
   app.get("/config/download", (req, res) => {
     try {
-      return res.sendFile(`${__dirname}/json/config.json`);
+      if (fs.existsSync(`${__dirname}/json/config.json`)) {
+        return res.sendFile(`${__dirname}/json/config.json`);
+      } else {
+        return res.sendFile(`${__dirname}/json-init/config.json`);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -39,7 +43,13 @@ const routes = app => {
 
   app.get("/config", (req, res) => {
     try {
-      const data = fs.readFileSync(`${__dirname}/json/config.json`);
+      let data;
+      if (fs.existsSync(`${__dirname}/json/config.json`)) {
+        data = fs.readFileSync(`${__dirname}/json/config.json`);
+      } else {
+        data = fs.readFileSync(`${__dirname}/json-init/config.json`);
+      }
+
       const config = JSON.parse(data);
       return res.status(200).json(config);
     } catch (error) {
@@ -49,7 +59,12 @@ const routes = app => {
 
   app.get("/config/categories", (req, res) => {
     try {
-      const data = fs.readFileSync(`${__dirname}/json/config.json`);
+      let data;
+      if (fs.existsSync(`${__dirname}/json/config.json`)) {
+        data = fs.readFileSync(`${__dirname}/json/config.json`);
+      } else {
+        data = fs.readFileSync(`${__dirname}/json-init/config.json`);
+      }
       const config = JSON.parse(data);
       const categories = [];
       for (const prop in config) {
@@ -66,7 +81,12 @@ const routes = app => {
       if (!(req && req.params && req.params.key))
         return res.status(500).json({ error: "Bad Request" });
       const key = req.params.key;
-      const data = fs.readFileSync(`${__dirname}/json/config.json`);
+      let data;
+      if (fs.existsSync(`${__dirname}/json/config.json`)) {
+        data = fs.readFileSync(`${__dirname}/json/config.json`);
+      } else {
+        data = fs.readFileSync(`${__dirname}/json-init/config.json`);
+      }
       const config = JSON.parse(data);
       const filtered = config[key];
       return res.status(200).json(filtered);
@@ -79,10 +99,31 @@ const routes = app => {
     try {
       const key = req.body.key;
       const value = req.body.value;
-      const data = fs.readFileSync(`${__dirname}/json/config.json`);
+      let data;
+      if (fs.existsSync(`${__dirname}/json/config.json`)) {
+        data = fs.readFileSync(`${__dirname}/json/config.json`);
+      } else {
+        data = fs.readFileSync(`${__dirname}/json-init/config.json`);
+      }
+
+      //backup old data
+      const date = new Date().valueOf().toString();
+      const backupData = data;
+      if (!fs.existsSync(`${__dirname}/json-backup/`))
+        fs.mkdirSync(`${__dirname}/json-backup/`);
+      if (!fs.existsSync(`${__dirname}/json-backup/${date}`))
+        fs.mkdirSync(`${__dirname}/json-backup/${date}`);
+      fs.writeFileSync(
+        `${__dirname}/json-backup/${date}/config.json`,
+        backupData
+      );
+
+      //write new change to config.json
       const config = JSON.parse(data);
       config[key] = value;
       const updatedData = JSON.stringify(config);
+      if (!fs.existsSync(`${__dirname}/json`))
+        fs.mkdirSync(`${__dirname}/json`);
       fs.writeFileSync(`${__dirname}/json/config.json`, updatedData);
       return res.status(200).json(value);
     } catch (error) {
